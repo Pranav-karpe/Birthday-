@@ -65,10 +65,12 @@ const camera  = $('camera');
 const fgrid   = $('fgrid');
 const kEyebrow= $('kEyebrow');
 const kSub    = $('kSub');
+const kWait   = $('kWait');
+const kWaitProg= $('kWaitProg');
 const barTop  = $('barTop');
 const barBot  = $('barBot');
 const uline   = $('uline').querySelector('.uline__path');
-const bloom   = $('bloom');
+const curtain = $('curtain');
 const replay  = $('replay');
 
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -770,15 +772,16 @@ function buildFilm(m){
     onComplete: () => {
       gsap.set(field, { autoAlpha: 0 });
       treeStart();
-      // fade promptly so the growing tree is revealed with no white hold
-      gsap.to(bloom, { autoAlpha: 0, duration: 1.15, ease: 'power2.out' });
+      // cinematic fade from black to reveal the glowing tree
+      if (curtain) gsap.to(curtain, { opacity: 0, duration: 1.1, ease: 'power2.out' });
     },
   });
 
   // reset (t=0)
   t.set(target, { y: 0, scaleX: 1, scaleY: 1, opacity: 1 })
    .set(arrow, { opacity: 1, x: arrowBaseX, y: m.arrowStartY, scaleY: 1 })
-   .set([flood, bloom], { autoAlpha: 0, scale: 0.001, x: 0, y: 0 })
+   .set(flood, { autoAlpha: 0, scale: 0.001, x: 0, y: 0 })
+   .set(curtain, { opacity: 0 })
    .set(flood, { x: m.fx, y: m.fy })
    .set(field, { autoAlpha: 0 })
    .set('.blob', { opacity: 0 })
@@ -788,6 +791,8 @@ function buildFilm(m){
    .set(barBot, { yPercent: 100 })
    .set(kEyebrow, { opacity: 0, y: 12 })
    .set(kSub, { opacity: 0, y: 12 })
+   .set(kWait, { opacity: 0 })
+   .set(kWaitProg, { width: '0%' })
    .set(kChars, { transformPerspective: 620, transformOrigin: '50% 100%', yPercent: 135, rotationX: -82 })
    .set(uline, { drawn: 0 });
 
@@ -833,18 +838,17 @@ function buildFilm(m){
    .set(flood, { autoAlpha: 0 }, 1.36);
 
   // --- the camera push -------------------------------------------------------
-  // Hold Act 3 for 4 full seconds after the wish lands so she can read it
-  const ACT3_END = 7.0;
-  const CAM_DUR = ACT3_END - 1.38;
-  t.fromTo(camera, { scale: 1.0, yPercent: 0 }, { scale: 1.08, yPercent: -1.6, duration: CAM_DUR, ease: 'none' }, 1.38)
-   .fromTo(fgrid, { xPercent: 0, yPercent: 0 }, { xPercent: -2.0, yPercent: -1.2, duration: CAM_DUR, ease: 'none' }, 1.38);
+  const FADE_START = 5.2;
+  const CAM_DUR = FADE_START + 0.8 - 1.38;
+  t.fromTo(camera, { scale: 1.0, yPercent: 0 }, { scale: 1.07, yPercent: -1.3, duration: CAM_DUR, ease: 'none' }, 1.38)
+   .fromTo(fgrid, { xPercent: 0, yPercent: 0 }, { xPercent: -1.6, yPercent: -1.0, duration: CAM_DUR, ease: 'none' }, 1.38);
 
   // beat markers for the recorder's soundtrack (no-ops off ?record)
   t.call(cue, ['hit'], 0.26)
    .call(cue, ['flood'], 1.00)
    .call(cue, ['wish'], 1.68)
    .call(cue, ['wish2'], 2.06)
-   .call(cue, ['bloom'], ACT3_END + 0.1);
+   .call(cue, ['fade'], FADE_START);
 
   // bars stay off-screen — no letterbox on Act 3, wish is fully visible
   t.set(barTop, { yPercent: -100 }, 1.5)
@@ -857,11 +861,12 @@ function buildFilm(m){
    .to(uline, { drawn: 1, duration: 0.45, ease: 'power2.inOut' }, 2.54)
    .to(kSub, { opacity: 1, y: 0, duration: 0.45, ease: 'power3.out' }, 2.74);
 
-  // --- the handoff bloom after brief reading pause --------------------------
-  t.to(barTop, { yPercent: -100, duration: 0.5, ease: 'power2.in' }, ACT3_END)
-   .to(barBot, { yPercent: 100, duration: 0.5, ease: 'power2.in' }, ACT3_END)
-   .set(bloom, { autoAlpha: 1 }, ACT3_END + 0.1)
-   .fromTo(bloom, { scale: 0.02 }, { scale: m.bloomScale, duration: 0.65, ease: 'power2.in' }, ACT3_END + 0.1);
+  // --- wait indicator: black line and text below "to you, Manu" ---
+  t.to(kWait, { opacity: 1, duration: 0.35, ease: 'power2.out' }, 3.1)
+   .fromTo(kWaitProg, { width: '0%' }, { width: '100%', duration: 2.1, ease: 'power1.inOut' }, 3.1);
+
+  // --- cinematic black fade out to change screen ---
+  t.to(curtain, { opacity: 1, duration: 0.8, ease: 'power2.inOut' }, FADE_START);
 
   return t;
 }
@@ -971,7 +976,8 @@ function resetAll(){
     bgSong.pause();
     bgSong.currentTime = 0;
   }
-  gsap.set([flood, bloom], { autoAlpha: 0 });
+  gsap.set(flood, { autoAlpha: 0 });
+  if (curtain) gsap.set(curtain, { opacity: 0 });
   gsap.set(field, { autoAlpha: 0 });
   gsap.set(arrow, { opacity: 1, scaleY: 1 });
   played = false;

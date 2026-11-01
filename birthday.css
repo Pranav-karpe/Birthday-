@@ -365,6 +365,40 @@ body{
   text-shadow:0 1px 10px rgba(100,10,40,.4);
 }
 
+/* ---- sleek black wait line & text below "to you, Manu" (Act 3) ---- */
+.kWait{
+  display:flex; flex-direction:column; align-items:center;
+  gap:7px;
+  margin-top:clamp(12px, 2vh, 22px);
+  opacity:0;
+  will-change:opacity, transform;
+}
+.kWait__line{
+  width:clamp(130px, 28vw, 220px);
+  height:3px;
+  background:rgba(20, 2, 8, 0.45);
+  border-radius:999px;
+  overflow:hidden;
+  box-shadow:0 1px 3px rgba(255, 255, 255, 0.2);
+}
+.kWait__progress{
+  display:block;
+  width:0%;
+  height:100%;
+  background:linear-gradient(90deg, #180309, #4a0a1f 50%, #180309 100%);
+  border-radius:999px;
+  box-shadow:0 0 6px rgba(0, 0, 0, 0.6);
+}
+.kWait__text{
+  font-family:"Cormorant Garamond", Georgia, serif;
+  font-style:italic; font-weight:600;
+  font-size:clamp(13px, 2.2vw, 16.5px);
+  letter-spacing:.08em;
+  color:rgba(255, 240, 235, 0.88);
+  text-shadow:0 1px 4px rgba(40, 4, 15, 0.5);
+  margin:0;
+}
+
 /* cinema bars — hidden, kept for reset logic but never shown */
 .bar{
   position:absolute; left:0; right:0; height:16vh;
@@ -375,15 +409,14 @@ body{
 .bar--bot{ bottom:0; transform:translateY(100%); }
 
 /* ============================================================
-   THE HANDOFF BLOOM (rose wish → dawn of the tree)
+   THE CINEMATIC BLACK FADE OUT CURTAIN (Act 3 → Act 4 transition)
    ============================================================ */
-.bloom{
-  position:absolute; left:50%; top:50%;
-  width:60px; height:60px; margin:-30px 0 0 -30px;
-  border-radius:50%;
-  background:radial-gradient(circle, #fff 0%, #fff2d6 30%, rgba(255,214,150,.85) 55%, rgba(255,190,150,0) 74%);
-  z-index:8; opacity:0; transform:scale(.001);
-  will-change:transform, opacity; pointer-events:none;
+.fade-curtain{
+  position:fixed; inset:0;
+  background:#0e0609;
+  z-index:8; opacity:0;
+  pointer-events:none;
+  will-change:opacity;
 }
 
 /* ============================================================
@@ -391,8 +424,9 @@ body{
    ============================================================ */
 .wish{
   position:absolute;
-  left:4.5%; bottom:6%;
-  max-width:min(40vw, 460px);
+  left:5%;
+  top:clamp(16px, 4vh, 40px);
+  max-width:min(38vw, 430px);
   z-index:6;
   pointer-events:none;
   color:var(--ink);
@@ -402,18 +436,12 @@ body{
 }
 .wish.is-in{ visibility:visible; }
 .wish::before{
-  content:""; position:absolute;
-  inset:-12px -16px -12px -16px;
-  background:radial-gradient(75% 85% at 25% 45%, rgba(255,250,244,.85), rgba(255,250,244,.35) 65%, rgba(255,250,244,0) 98%);
-  border-radius:20px;
-  z-index:-1; opacity:0; transition:opacity 1s ease;
-  pointer-events:none;
+  display:none !important;
 }
-.wish.is-in::before{ opacity:1; }
 
 /* Tagline pill above 21 */
 .wish__tagline{
-  margin:0 0 .35em;
+  margin:0 0 .22em;
   opacity:0; transform:translateY(10px); filter:blur(4px);
   transition:opacity .8s ease, transform .9s var(--ease-out), filter .8s ease;
 }
@@ -423,12 +451,12 @@ body{
 }
 .tagline__pill{
   display:inline-flex; align-items:center; gap:6px;
-  padding:4px 12px;
+  padding:3px 11px;
   background:rgba(255, 245, 240, 0.9);
   border:1px solid rgba(224, 140, 165, 0.45);
   border-radius:999px;
   font-family:"Cormorant Garamond", Georgia, serif;
-  font-weight:700; font-size:clamp(12px, 2.1vw, 15px);
+  font-weight:700; font-size:clamp(11.5px, 2vw, 14px);
   letter-spacing:.05em;
   color:#912d4a;
   box-shadow:0 2px 8px rgba(180, 50, 90, 0.1);
@@ -439,9 +467,9 @@ body{
 .wish__num{
   font-family:"Fraunces", Georgia, serif;
   font-weight:900;
-  font-size:clamp(52px, 9.5vw, 92px);
+  font-size:clamp(40px, 7vw, 70px);
   line-height:.86;
-  margin:0 0 .08em;
+  margin:0 0 .04em;
   background:linear-gradient(135deg, #ffe082 0%, #f4a626 40%, #b86e0c 80%, #ffd54f 100%);
   -webkit-background-clip:text; background-clip:text; color:transparent;
   filter:drop-shadow(0 3px 10px rgba(184,110,12,.4));
@@ -458,9 +486,9 @@ body{
 .wish__date{
   font-family:"Cormorant Garamond", Georgia, serif;
   font-style:italic; font-weight:600;
-  font-size:clamp(15px, 2.8vw, 21.5px);
+  font-size:clamp(13px, 2.3vw, 17.5px);
   letter-spacing:.04em; color:#a6425d;
-  margin:0 0 .3em;
+  margin:0 0 .2em;
   text-shadow:0 1px 2px #fff8f1, 0 0 8px rgba(255,248,241,.95);
   opacity:0; transform:translateY(12px); filter:blur(4px);
   transition:opacity .8s ease, transform .9s var(--ease-out), filter .8s ease;
@@ -485,8 +513,8 @@ body{
 }
 .wish__hero{
   font-family:"Great Vibes", cursive; font-weight:400;
-  font-size:clamp(42px, 9vw, 84px);
-  line-height:1.15; padding:.12em 0; margin:-.02em 0 .06em;
+  font-size:clamp(34px, 6.8vw, 68px);
+  line-height:1.12; padding:.1em 0; margin:-.02em 0 .04em;
   background:linear-gradient(180deg, #e85a83 0%, #c41f52 50%, #9c0f42 100%);
   -webkit-background-clip:text; background-clip:text; color:transparent;
   filter:
@@ -496,8 +524,8 @@ body{
   transform-origin:8% 60%;
 }
 .wish__rule{
-  display:block; width:clamp(54px, 14vw, 130px); height:2.5px;
-  margin:.12em 0 .42em;
+  display:block; width:clamp(50px, 13vw, 120px); height:2px;
+  margin:.08em 0 .32em;
   background:linear-gradient(90deg, var(--gold-2), rgba(232,162,61,0));
   box-shadow:0 0 8px rgba(255,247,240,.9);
   transform-origin:left center;
@@ -505,14 +533,14 @@ body{
 
 /* The personal letter lines */
 .wish__letter{
-  margin:.45em 0 .6em;
-  display:flex; flex-direction:column; gap:.42em;
+  margin:.3em 0 .42em;
+  display:flex; flex-direction:column; gap:.28em;
 }
 .wish__line{
   font-family:"Cormorant Garamond", Georgia, serif;
-  font-size:clamp(15px, 2.6vw, 19.5px);
+  font-size:clamp(13px, 2.2vw, 17.5px);
   font-weight:500;
-  line-height:1.5;
+  line-height:1.45;
   color:#3f1d26;
   margin:0;
   text-shadow:0 1px 2px rgba(255,255,255,.98);
@@ -530,7 +558,7 @@ body{
 
 .wish__sub{
   font-family:"Cormorant Garamond", Georgia, serif;
-  font-weight:600; font-style:italic; font-size:clamp(14px, 2.7vw, 19.5px);
+  font-weight:600; font-style:italic; font-size:clamp(12.5px, 2.1vw, 16.5px);
   letter-spacing:.04em; color:#6b3543;
   text-shadow:0 1px 2px #fff8f1, 0 0 8px rgba(255,248,241,.98);
 }
@@ -646,7 +674,7 @@ body{
    REDUCED MOTION — skip the film, hand over the finished tree
    ============================================================ */
 @media (prefers-reduced-motion: reduce){
-  .hero, .flood, .field, .bloom, .hero__ring{ display:none !important; }
+  .hero, .flood, .field, .fade-curtain, .hero__ring{ display:none !important; }
   .wish__tagline, .wish__num, .wish__date, .wish__rule, .wish__line, .wish__sub, .charm{ opacity:1; transform:none; filter:none; transition:none; }
   .wish__hero{ clip-path:none; filter:drop-shadow(0 0 5px rgba(255,252,248,.98)) drop-shadow(0 2px 4px rgba(130,18,55,.5)) drop-shadow(0 4px 14px rgba(150,28,70,.32)); }
   .wish.is-in .wish__hero{ animation:none; }

@@ -198,14 +198,22 @@
                 stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
         <p class="kSub" id="kSub">to you, Manu &mdash; Happy Birthday &#127874;</p>
+
+        <!-- Black line and wait indicator below "to you, Manu" -->
+        <div class="kWait" id="kWait" aria-hidden="true">
+          <div class="kWait__line">
+            <span class="kWait__progress" id="kWaitProg"></span>
+          </div>
+          <p class="kWait__text">wait for next page &hellip;</p>
+        </div>
       </div>
 
       <div class="bar bar--top" id="barTop"></div>
       <div class="bar bar--bot" id="barBot"></div>
     </div>
 
-    <!-- The gold light that bridges the rose wish into the dawn of the tree. -->
-    <div class="bloom" id="bloom" aria-hidden="true"></div>
+    <!-- The cinematic black fade transition between Act 3 and Act 4 -->
+    <div class="fade-curtain" id="curtain" aria-hidden="true"></div>
 
     <!-- ACT 4 — THE HAND-LETTERED WISH & PERSONAL LETTER (over the tree) -->
     <div class="wish" id="wish" aria-hidden="true">
