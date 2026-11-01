@@ -833,8 +833,8 @@ function buildFilm(m){
    .set(flood, { autoAlpha: 0 }, 1.36);
 
   // --- the camera push -------------------------------------------------------
-  // Hold Act 3 for ~1.2s after the wish lands so she reads it, then transitions right away
-  const ACT3_END = 4.3;
+  // Hold Act 3 for 4 full seconds after the wish lands so she can read it
+  const ACT3_END = 7.0;
   const CAM_DUR = ACT3_END - 1.38;
   t.fromTo(camera, { scale: 1.0, yPercent: 0 }, { scale: 1.08, yPercent: -1.6, duration: CAM_DUR, ease: 'none' }, 1.38)
    .fromTo(fgrid, { xPercent: 0, yPercent: 0 }, { xPercent: -2.0, yPercent: -1.2, duration: CAM_DUR, ease: 'none' }, 1.38);
@@ -846,9 +846,9 @@ function buildFilm(m){
    .call(cue, ['wish2'], 2.06)
    .call(cue, ['bloom'], ACT3_END + 0.1);
 
-  // cinema bars ease into a letterbox
-  t.to(barTop, { yPercent: 0, duration: 0.6, ease: 'power2.out' }, 1.5)
-   .to(barBot, { yPercent: 0, duration: 0.6, ease: 'power2.out' }, 1.5);
+  // bars stay off-screen — no letterbox on Act 3, wish is fully visible
+  t.set(barTop, { yPercent: -100 }, 1.5)
+   .set(barBot, { yPercent: 100 }, 1.5);
 
   // --- the kinetic wish ------------------------------------------------------
   t.to(kEyebrow, { opacity: 1, y: 0, duration: 0.45, ease: 'power3.out' }, 1.54)

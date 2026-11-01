@@ -307,13 +307,14 @@ body{
   background:radial-gradient(128% 96% at 50% 44%, transparent 50%, rgba(70,6,28,.5) 100%);
 }
 
-/* the camera — everything on the flood rides a slow continuous push */
+/* the camera — everything on the flood rides a slow continuous push, fits one screen */
 .camera{
   position:absolute; inset:0;
   display:flex; flex-direction:column; justify-content:center; align-items:center;
-  gap:clamp(4px,1.2vh,12px);
-  padding:0 6vw; text-align:center;
+  gap:clamp(2px,1vh,10px);
+  padding:2vh 6vw; text-align:center;
   will-change:transform;
+  overflow:hidden;
 }
 .kEyebrow{
   font-family:"Cormorant Garamond", Georgia, serif;
@@ -338,7 +339,7 @@ body{
 .hl__word{
   display:inline-block;
   font-weight:900;
-  font-size:clamp(52px, 15vw, 168px);
+  font-size:clamp(44px, 13vw, 148px);
   letter-spacing:-.01em;
   color:#fff6f1;
   text-shadow:0 6px 34px rgba(60,4,24,.34), 0 2px 3px rgba(90,8,36,.42);
@@ -354,23 +355,24 @@ body{
   filter:drop-shadow(0 2px 8px rgba(255,180,90,.5));
 }
 .kSub{
-  margin-top:clamp(12px,2.4vh,26px);
+  margin-top:clamp(8px,1.6vh,20px);
   font-family:"Cormorant Garamond", Georgia, serif;
   font-weight:600; font-style:italic;
-  font-size:clamp(17px, 4vw, 30px);
+  font-size:clamp(15px, 3.4vw, 26px);
   letter-spacing:.05em;
   color:#fff2ea;
   opacity:0; transform:translateY(10px);
   text-shadow:0 1px 10px rgba(100,10,40,.4);
 }
 
-/* cinema bars — closed = black, they open as the wish lands */
+/* cinema bars — hidden, kept for reset logic but never shown */
 .bar{
   position:absolute; left:0; right:0; height:16vh;
   background:#12040b; z-index:3; will-change:transform; pointer-events:none;
+  transform:translateY(-100%);
 }
-.bar--top{ top:0; }
-.bar--bot{ bottom:0; }
+.bar--top{ top:0; transform:translateY(-100%); }
+.bar--bot{ bottom:0; transform:translateY(100%); }
 
 /* ============================================================
    THE HANDOFF BLOOM (rose wish → dawn of the tree)
